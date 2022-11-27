@@ -27,7 +27,6 @@ def sumaNvalidos(vector):
 #Comprobar si la solucion es factible
 def checksSolution(s1, poblacion):
     vectorAux = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    flag = False
     for i in range(len(s1)):
         if(s1[i] == 1):
             for j in range(len(s1)):
@@ -40,16 +39,7 @@ def checksSolution(s1, poblacion):
                         vectorAux[j] = 0
                 
     nums_1 = sumaNvalidos(vectorAux)           
-    # for k in range(len(s1)):                
-    #         if(vectorAux[k] == 1):
-    #             flag = True
-    #         else:
-    #             flag = False
-    #             break
-    # if (flag):
-    #     return    
-    # else:
-    #     print("Solucion no valida")
+
     return nums_1
 
 
