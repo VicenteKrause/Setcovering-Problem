@@ -157,7 +157,7 @@ def main():
     best = conjuntoS[0]
     sumCost=0
 
-    while cont <= 1000:
+    while cont <=10:
         print("Iteracion :", cont)
         padres = seleccionPadres(conjuntoS,variables.values)
         if(calculoPrecio(costo,padres[0]) < calculoPrecio(costo,padres[1]) and checksSolutionNvalidos(padres[0],poblacion)==36):
