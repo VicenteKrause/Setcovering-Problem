@@ -183,7 +183,6 @@ def main():
         sumCost = calculoPrecio(costo,hijos[0])+calculoPrecio(costo,hijos[1])+calculoPrecio(costo,padres[0])+calculoPrecio(costo,padres[1]) + sumCost
         best=besth
         conjDesv.extend([conjuntoS])
-        print(len(conjDesv))
         cont +=1
         print("---------------------------------------------------------------------------------------------------------------------------------")
     sumDesv = []
