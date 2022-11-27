@@ -1,11 +1,15 @@
-import varibles
+import variables
+import random
+import numpy as np
 
-s1 = varibles.s4
-costo = varibles.costos
-poblacion = varibles.values
+s1 = variables.s4
+costo = variables.costos
+poblacion = variables.values
+first = True
+second = True
 
 #Funcion objetivo a minimizar
-def funcionObjetivo(costo, se):
+def calculoPrecio(costo, se):
     sum = 0
 
     for i in range(len(costo)):
@@ -38,31 +42,129 @@ def checksSolution(s1, poblacion):
                     else:
                         vectorAux[j] = 0
                 
-    nums_1 = sumaNvalidos(vectorAux)           
+    sumnums = sumaNvalidos(vectorAux)
+    if(sumnums != 36):
+        sumnums=0
+    precio = calculoPrecio(costo,s1)   
+    prom = sumnums/precio  
+    return prom
 
-    return nums_1
-
-
-
+#Funcion que selecciona los mejores padres
 def seleccionPadres(solInit,poblacion):
-    conjunto_p = solInit
     padres_s = []
     
-    for i in range(len(conjunto_p)):
-        valor = checksSolution(conjunto_p[i],poblacion)
+    for i in range(len(solInit)):
+        valor = checksSolution(solInit[i],poblacion)
         padres_s.extend([valor])
-
     padres_s.sort()
     padres_s.pop(0)
-    padres_s.pop(0)
-    for i in range(len(conjunto_p)):
-        if(padres_s[0] == checksSolution(conjunto_p[i],poblacion)):
-            padre1 = conjunto_p[i]
-        if(padres_s[1] == checksSolution(conjunto_p[i],poblacion)):
-            padre2 = conjunto_p[i]
-    print(padres_s)
-    padres = [padre1,padre2]
-    print(padres)
+    padres_s.pop(0)   
 
+    for i in range(len(solInit)):
+        if(padres_s[0] == checksSolution(solInit[i],poblacion)):
+            padre1 = solInit[i]
+        if(padres_s[1] == checksSolution(solInit[i],poblacion)):
+            padre2 = solInit[i]
 
-seleccionPadres(varibles.solInit,poblacion)
+    padres = [padre1 , padre2]
+    return padres
+
+#Cruzamiento de los padres
+def cruzamiento(padres):
+    size = len(padres[0])/2
+    padre1 = padres[0]
+    padre2 = padres[1]
+
+    hijo1 = []
+    hijo2 = []
+
+    for i in range(len(padres[0])):
+        if(i<size):
+            hijo1.extend([padre1[i]])
+            hijo2.extend([padre2[i]])
+        else:
+            hijo1.extend([padre2[i]])
+            hijo2.extend([padre1[i]])
+
+    for i in range(len(hijo1)):
+        ran = random.uniform(0, 1)
+        if(ran<variables.fm):
+            if(hijo1[i] == 0):
+                hijo1[i] = 1
+            else:
+                hijo1[i] = 0
+        else:
+            continue
+
+    for i in range(len(hijo2)):
+        ran = random.uniform(0, 1)
+        if(ran<variables.fm):
+            if(hijo2[i] == 0):
+                hijo2[i] = 1
+            else:
+                hijo2[i] = 0
+        else:
+            continue
+    
+    hijos =[ hijo1 , hijo2 ]
+    return hijos
+
+# Comprueba la solucion
+def comunaConAntena(indice, solution):
+    if solution[indice] == 1:
+        return True
+    else:
+        for i in range(len(solution)):
+            if poblacion[indice ][i] == 1 and solution[i] == 1:
+                return True
+    return False
+def regionConAtena(solution):
+    for i in range(len(solution)):
+        if comunaConAntena(i, solution) == False:
+            return False
+    return True
+
+#Genera soluciones iniciales
+def generarSoluciones():
+    solution = [0] * len(poblacion)
+    while regionConAtena(solution) == False:
+        solution[random.randint(0, len(solution)-1)] = 1
+    return solution
+
+def main():
+    conjuntoS = [[],[],[],[]]    
+    for i in range(4):
+        conjuntoS[i].extend(generarSoluciones())
+    
+    cont = 1
+    best = conjuntoS[0]
+    while cont <= 10:
+        padres = seleccionPadres(conjuntoS,variables.values)
+        if(calculoPrecio(costo,padres[0]) < calculoPrecio(costo,padres[1]) and sumaNvalidos(padres[0])==36):
+            best = padres[0]
+        if(calculoPrecio(costo,padres[0]) > calculoPrecio(costo,padres[1]) and sumaNvalidos(padres[1])==36):
+            best = padres[1]
+        
+        print("Padre 1:",padres[0] )
+        print("Costo:", calculoPrecio(costo,padres[0]))
+        print("Padre 2:",padres[1] )
+        print("Costo:", calculoPrecio(costo,padres[1]))
+        hijos = cruzamiento(padres)
+        print("Hijo 1:",hijos[0] )
+        print("Costo:", calculoPrecio(costo,hijos[0]))
+        print("Padre 2:",hijos[1] )
+        print("Hijo:", calculoPrecio(costo,hijos[1]))
+        conjuntoS = [hijos[0],hijos[1],padres[0],padres[1]]
+        besth = best
+        if(calculoPrecio(costo,best)>calculoPrecio(costo,hijos[0]) and sumaNvalidos(hijos[0])==36):
+            besth = hijos[0]
+        if(calculoPrecio(costo,best)>calculoPrecio(costo,hijos[1]) and sumaNvalidos(hijos[1])==36):
+            besth = hijos[1]
+
+        best=besth
+        cont +=1
+    print("--------------------------------------------------------------------------------------------------------------------------------------")
+    print("Mejor Solucion:",best)
+    print("Costo:", calculoPrecio(costo,best))
+
+main()
