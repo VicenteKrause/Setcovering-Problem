@@ -157,7 +157,7 @@ def main():
     best = conjuntoS[0]
     sumCost=0
 
-    while cont <= 10:
+    while cont <= 1000:
         print("Iteracion :", cont)
         padres = seleccionPadres(conjuntoS,variables.values)
         if(calculoPrecio(costo,padres[0]) < calculoPrecio(costo,padres[1]) and checksSolutionNvalidos(padres[0],poblacion)==36):
@@ -172,7 +172,7 @@ def main():
         hijos = cruzamiento(padres)
         print("Hijo 1:",hijos[0] )
         print("Costo:", calculoPrecio(costo,hijos[0]))
-        print("Padre 2:",hijos[1] )
+        print("Hijo 2:",hijos[1] )
         print("Hijo:", calculoPrecio(costo,hijos[1]))
         conjuntoS = [hijos[0],hijos[1],padres[0],padres[1]]
         besth = best
@@ -195,7 +195,7 @@ def main():
 
     print("Mejor Solucion:",best)
     print("Costo:", calculoPrecio(costo,best))
-    print("Promedio costos:", sumCost/40)
+    print("Promedio costos:", sumCost/(4*cont))
     print("Desviacion Estandar:", desvEst)
 
 main()
