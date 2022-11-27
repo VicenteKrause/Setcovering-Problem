@@ -2,11 +2,11 @@ import variables
 import random
 import numpy as np
 
+
 s1 = variables.s4
 costo = variables.costos
 poblacion = variables.values
-first = True
-second = True
+
 
 #Funcion objetivo a minimizar
 def calculoPrecio(costo, se):
@@ -48,6 +48,22 @@ def checksSolution(s1, poblacion):
     precio = calculoPrecio(costo,s1)   
     prom = sumnums/precio  
     return prom
+
+def checksSolutionNvalidos(s1, poblacion):
+    vectorAux = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    for i in range(len(s1)):
+        if(s1[i] == 1):
+            for j in range(len(s1)):
+                if(poblacion[i][j] == 1 ):
+                    vectorAux[j] = 1
+                else:
+                    if(vectorAux[j] == 1):
+                        continue
+                    else:
+                        vectorAux[j] = 0
+                
+    sumnums = sumaNvalidos(vectorAux)
+    return sumnums
 
 #Funcion que selecciona los mejores padres
 def seleccionPadres(solInit,poblacion):
@@ -132,17 +148,21 @@ def generarSoluciones():
     return solution
 
 def main():
-    conjuntoS = [[],[],[],[]]    
+    conjuntoS = [[],[],[],[]]
+    conjDesv = []
     for i in range(4):
         conjuntoS[i].extend(generarSoluciones())
     
     cont = 1
     best = conjuntoS[0]
+    sumCost=0
+
     while cont <= 10:
+        print("Iteracion :", cont)
         padres = seleccionPadres(conjuntoS,variables.values)
-        if(calculoPrecio(costo,padres[0]) < calculoPrecio(costo,padres[1]) and sumaNvalidos(padres[0])==36):
+        if(calculoPrecio(costo,padres[0]) < calculoPrecio(costo,padres[1]) and checksSolutionNvalidos(padres[0],poblacion)==36):
             best = padres[0]
-        if(calculoPrecio(costo,padres[0]) > calculoPrecio(costo,padres[1]) and sumaNvalidos(padres[1])==36):
+        if(calculoPrecio(costo,padres[0]) > calculoPrecio(costo,padres[1]) and checksSolutionNvalidos(padres[1],poblacion)==36):
             best = padres[1]
         
         print("Padre 1:",padres[0] )
@@ -156,15 +176,27 @@ def main():
         print("Hijo:", calculoPrecio(costo,hijos[1]))
         conjuntoS = [hijos[0],hijos[1],padres[0],padres[1]]
         besth = best
-        if(calculoPrecio(costo,best)>calculoPrecio(costo,hijos[0]) and sumaNvalidos(hijos[0])==36):
+        if(calculoPrecio(costo,best)>calculoPrecio(costo,hijos[0]) and checksSolutionNvalidos(hijos[0],poblacion)==36):
             besth = hijos[0]
-        if(calculoPrecio(costo,best)>calculoPrecio(costo,hijos[1]) and sumaNvalidos(hijos[1])==36):
+        if(calculoPrecio(costo,best)>calculoPrecio(costo,hijos[1]) and checksSolutionNvalidos(hijos[1],poblacion)==36):
             besth = hijos[1]
-
+        sumCost = calculoPrecio(costo,hijos[0])+calculoPrecio(costo,hijos[1])+calculoPrecio(costo,padres[0])+calculoPrecio(costo,padres[1]) + sumCost
         best=besth
+        conjDesv.extend([conjuntoS])
+        print(len(conjDesv))
         cont +=1
-    print("--------------------------------------------------------------------------------------------------------------------------------------")
+        print("---------------------------------------------------------------------------------------------------------------------------------")
+    sumDesv = []
+    desvEst = 0
+    for i in range(len(conjDesv)):
+        desSum = conjDesv[i]
+        for j in range(len(desSum)):        
+            sumDesv.extend([calculoPrecio(costo,desSum[j])])
+    desvEst = np.std(sumDesv)
+
     print("Mejor Solucion:",best)
     print("Costo:", calculoPrecio(costo,best))
+    print("Promedio costos:", sumCost/40)
+    print("Desviacion Estandar:", desvEst)
 
 main()
