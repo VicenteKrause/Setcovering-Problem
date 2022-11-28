@@ -29,20 +29,8 @@ def sumaNvalidos(vector):
     return cont_n
 
 #Comprobar si la solucion es factible
-def checksSolution(s1, poblacion):
-    vectorAux = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    for i in range(len(s1)):
-        if(s1[i] == 1):
-            for j in range(len(s1)):
-                if(poblacion[i][j] == 1 ):
-                    vectorAux[j] = 1
-                else:
-                    if(vectorAux[j] == 1):
-                        continue
-                    else:
-                        vectorAux[j] = 0
-                
-    sumnums = sumaNvalidos(vectorAux)
+def checksSolution(s1, poblacion):    
+    sumnums = checksSolutionNvalidos(s1, poblacion)
     if(sumnums != 36):
         sumnums=0
     precio = calculoPrecio(costo,s1)   
@@ -199,7 +187,7 @@ def main():
         if(numCom==32):
             numCom+=1
         if(best[i]==1):
-            print("Comuna Numero:",numCom+1)
+            print("     Comuna Numero:",numCom+1)
         numCom+=1
 
     print("Costo:", calculoPrecio(costo,best))
