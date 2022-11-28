@@ -192,8 +192,16 @@ def main():
         for j in range(len(desSum)):        
             sumDesv.extend([calculoPrecio(costo,desSum[j])])
     desvEst = np.std(sumDesv)
+    numCom = 1
+    print("Mejor Solucion:", best)
+    print("Comunas donde instalar")
+    for i in range(len(best)):
+        if(numCom==32):
+            numCom+=1
+        if(best[i]==1):
+            print("Comuna Numero:",numCom+1)
+        numCom+=1
 
-    print("Mejor Solucion:",best)
     print("Costo:", calculoPrecio(costo,best))
     print("Promedio costos:", sumCost/(4*cont))
     print("Desviacion Estandar:", desvEst)
