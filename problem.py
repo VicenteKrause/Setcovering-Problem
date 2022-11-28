@@ -29,7 +29,7 @@ def sumaNvalidos(vector):
     return cont_n
 
 #Comprobar si la solucion es factible
-def checksSolution(s1, poblacion):    
+def checksSolution(s1, poblacion):
     sumnums = checksSolutionNvalidos(s1, poblacion)
     if(sumnums != 36):
         sumnums=0
